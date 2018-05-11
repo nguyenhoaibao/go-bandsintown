@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/bradfitz/latlong"
-	"github.com/tj/go-debug"
+	"github.com/visionmedia/go-debug"
 	"github.com/yujinlim/go-bandsintown/model"
 )
 
