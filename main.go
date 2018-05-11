@@ -8,7 +8,7 @@ import (
 
 	"github.com/bradfitz/latlong"
 	"github.com/visionmedia/go-debug"
-	"github.com/yujinlim/go-bandsintown/model"
+	"github.com/nguyenhoaibao/go-bandsintown/model"
 )
 
 var trace = debug.Debug("bands:log")
