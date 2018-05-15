@@ -3,17 +3,19 @@ package model
 import "time"
 
 type Event struct {
-	ID              int64    `json:"id"`
-	Name            string   `json:"name"`
-	Title           string   `json:"title"`
-	Datetime        DateTime `json:"datetime"`
-	TicketUrl       string   `json:"ticket_url"`
-	TicketType      string   `json:"ticket_type"`
-	TicketStatus    string   `json:"ticket_status"`
-	FacebookRSVPUrl string   `json:"facebook_rsvp_url"`
-	Description     string   `json:"description"`
-	Artists         []Artist `json:"artists"`
-	Venue           Venue    `json:"venue"`
+	ID             string   `json:"id"`
+	ArtistID       string   `json:"artist_id"`
+	URL            string   `json:"url"`
+	OnSaleDatetime string   `json:"on_sale_datetime"`
+	Datetime       DateTime `json:"datetime"`
+	Description    string   `json:"description"`
+	Venue          Venue    `json:"venue"`
+	Offers         []struct {
+		Type   string `json:"type"`
+		URL    string `json:"url"`
+		Status string `json:"status"`
+	} `json:"offers"`
+	Lineup []string `json:"lineup"`
 }
 
 type DateTime struct {
