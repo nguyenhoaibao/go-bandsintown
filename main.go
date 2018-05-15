@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/bradfitz/latlong"
-	"github.com/visionmedia/go-debug"
 	"github.com/nguyenhoaibao/go-bandsintown/model"
+	"github.com/visionmedia/go-debug"
 )
 
 var trace = debug.Debug("bands:log")
 
 const (
-	API_ROUTE   = "http://api.bandsintown.com/"
+	API_ROUTE   = "https://rest.bandsintown.com/"
 	ARTIST_PATH = "artists"
 	EVENTS_PATH = "events"
 	VERSION     = "2.0"
@@ -31,31 +31,32 @@ type Client struct {
 	API_KEY string
 }
 
+type events []model.Event
+
 // wrapperEvents a wrapper event struct to enable parsing of datetime
-type wrapperEvents struct {
-	events []model.Event
-}
+// type wrapperEvents struct {
+//         events []model.Event
+// }
+//
+func (e events) UnmarshalJSON(data []byte) error {
+	// var events []model.Event
 
-func (we *wrapperEvents) UnmarshalJSON(data []byte) error {
-	var events []model.Event
-
-	if err := json.Unmarshal(data, &events); err != nil {
+	if err := json.Unmarshal(data, &e); err != nil {
 		return err
 	}
 
-	if len(events) > 0 {
+	if len(e) > 0 {
 		// get all datetime for event within venue timezone
-		for i, event := range events {
+		for i, event := range e {
 			tz := latlong.LookupZoneName(float64(event.Venue.Latitude), float64(event.Venue.Longitude))
 			loc, err := time.LoadLocation(tz)
 			if err != nil {
 				continue
 			}
-			events[i].Datetime.Time = time.Date(event.Datetime.Time.Year(), event.Datetime.Time.Month(), event.Datetime.Time.Day(), event.Datetime.Time.Hour(), event.Datetime.Time.Minute(), event.Datetime.Time.Second(), event.Datetime.Time.Nanosecond(), loc)
+			e[i].Datetime.Time = time.Date(event.Datetime.Time.Year(), event.Datetime.Time.Month(), event.Datetime.Time.Day(), event.Datetime.Time.Hour(), event.Datetime.Time.Minute(), event.Datetime.Time.Second(), event.Datetime.Time.Nanosecond(), loc)
 		}
 	}
 
-	we.events = events
 	return nil
 }
 
@@ -68,7 +69,7 @@ func New(key string) *Client {
 // GetArtist get artist information based on artist name
 func (c *Client) GetArtist(name string) (model.Artist, error) {
 	var artist model.Artist
-	url := fmt.Sprintf("%s/%s?app_id=%s&api_version=%s&format=json", URL, name, c.API_KEY, VERSION)
+	url := fmt.Sprintf("%s/%s?app_id=%s", URL, name, c.API_KEY)
 	if err := get(url, &artist); err != nil {
 		return artist, err
 	}
@@ -80,14 +81,15 @@ func (c *Client) GetArtist(name string) (model.Artist, error) {
 
 // GetArtistEvents get artist's events by name
 func (c Client) GetArtistEvents(name string) ([]model.Event, error) {
-	var events wrapperEvents
-	url := fmt.Sprintf("%s/%s/events?app_id=%s&api_version=%s&format=json&date=all", URL, name, c.API_KEY, VERSION)
+	// var events wrapperEvents
+	var events []model.Event
+	url := fmt.Sprintf("%s/%s/events?app_id=%s", URL, name, c.API_KEY)
 	if err := get(url, &events); err != nil {
 		trace("error %s", err)
-		return events.events, err
+		return events, err
 	}
 
-	trace("events %d", len(events.events))
+	trace("events %d", len(events))
 
-	return events.events, nil
+	return events, nil
 }
