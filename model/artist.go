@@ -1,14 +1,13 @@
 package model
 
 type Artist struct {
-  ID                  string `json:"id"`
-  Name                string `json:"name"`
-  ImageUrl            string `json:"image_url"`
-  ThumbUrl            string `json:"thumb_url"`
-  FacebookTourUrl     string `json:"facebook_tour_dates_url"`
-  UpcomingEventsCount uint   `json:"upcoming_events_count"`
-  TrackerCount        uint   `json:"tracker_count"`
-  MBID                string `json:"mbid"`
-  URL                 string `json:"url"`
-  Website             string `json:"website"`
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	URL                string `json:"url"`
+	ImageURL           string `json:"image_url"`
+	ThumbURL           string `json:"thumb_url"`
+	FacebookPageURL    string `json:"facebook_page_url"`
+	MBID               string `json:"mbid"`
+	TrackerCount       uint   `json:"tracker_count"`
+	UpcomingEventCount uint   `json:"upcoming_event_count"`
 }
